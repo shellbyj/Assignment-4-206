@@ -36,26 +36,24 @@ totalcount_year <- lobster_size %>%
 
 kable(totalcount_year)
 
-#lobster abundance
-size_column <- ggplot(totalcount_year, aes(x = YEAR))+
-  geom_line(aes(y = total), colour = "blue")+
-  geom_line(aes(y = total), colour = "red")+
-  geom_line(aes(y = total), colour = "purple")+
-  geom_line(aes(y = total), colour = "green")+
-  geom_line(aes(y = total), colour = "black")
+#lobster abundanc
+size_column <- ggplot(totalcount_year, aes(x = YEAR, y = total))+
+  geom_point()+
+  geom_line(aes(colour = SITE))
+  
 
 size_column
 
 #total # of traps at each site each year (8 sites)
 totalcount_traps <- trap_counts %>%
-  filter(SITE != "AHND to AQUE") %>% 
+  filter(SITE != "AHND to AQUE", SITE != "ABUR", SITE != "AHND", SITE != "GOLB") %>% 
   group_by(YEAR, SITE) %>% 
   summarize(total = sum(TRAPS))
 
 #traps line plots
 traps_column <- ggplot(totalcount_traps, aes(x = YEAR, y = total))+
-  geom_line(colour = "red")+
-  facet_wrap(~ SITE)
+  geom_point()+
+  geom_line(aes(colour = SITE))
 
 traps_column
 ```
@@ -91,6 +89,8 @@ summary_lobster <- lobster_tidy %>%
 lobster_levene <- leveneTest(SIZE ~ SITE, data = lobster_tidy)
 
 lobster_levene
+
+## Largest variance is <4x the smallest (refer to the "summary_lobster" df), so ANOVA can still be used even though levene's test says that they are unequal. 
 
 ```
 
