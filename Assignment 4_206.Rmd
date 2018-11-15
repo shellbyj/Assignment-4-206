@@ -94,3 +94,15 @@ lobster_levene
 
 ```
 
+```{r}
+
+# ANOVA TEST
+
+lobster_aov <- aov(mean ~ SITE, data = summary_lobster)
+lobster_sum <- summary(lobster_aov)
+
+lobster_aov
+
+penguin_ph <- TukeyHSD(penguin_aov)
+```
+
