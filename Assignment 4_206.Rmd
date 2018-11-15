@@ -22,17 +22,21 @@ library(onewaytests)
 lobster_size <- read_csv("lobster_size_abundance.csv") #frequency version of lobster size data
 trap_counts <- read_csv("lobster_traps.csv")
 
+#expanded lobster size data
 lobster_tidy <- expand.dft(data.frame(lobster_size), freq = "COUNT")
 ```
 
 
 ```{r}
+
+#total # of lobsters sampled at each site each year
 totalcount_year <- lobster_size %>% 
   group_by(YEAR, SITE) %>% 
   summarize(total = sum(COUNT))
 
 kable(totalcount_year)
 
+#lobster abundance
 size_column <- ggplot(totalcount_year, aes(x = YEAR))+
   geom_line(aes(y = total), colour = "blue")+
   geom_line(aes(y = total), colour = "red")+
@@ -42,11 +46,13 @@ size_column <- ggplot(totalcount_year, aes(x = YEAR))+
 
 size_column
 
+#total # of traps at each site each year (8 sites)
 totalcount_traps <- trap_counts %>%
   filter(SITE != "AHND to AQUE") %>% 
   group_by(YEAR, SITE) %>% 
   summarize(total = sum(TRAPS))
 
+#traps line plots
 traps_column <- ggplot(totalcount_traps, aes(x = YEAR, y = total))+
   geom_line(colour = "red")+
   facet_wrap(~ SITE)
@@ -64,7 +70,6 @@ lobster_size_hist <- ggplot(lobster_tidy, aes(x = SIZE)) +
   facet_wrap(~ SITE, scale = "free")
 
 lobster_size_hist
-
 
 #distribution looks pretty normal across the sites
 
