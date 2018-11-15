@@ -1,0 +1,90 @@
+---
+title: "Assignment 4"
+author: "Shellby Johnson"
+date: "November 15, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(knitr)
+library(vcdExtra)
+library(dplyr)
+library(car)
+library(onewaytests)
+
+
+lobster_size <- read_csv("lobster_size_abundance.csv") #frequency version of lobster size data
+trap_counts <- read_csv("lobster_traps.csv")
+
+lobster_tidy <- expand.dft(data.frame(lobster_size), freq = "COUNT")
+```
+
+
+```{r}
+totalcount_year <- lobster_size %>% 
+  group_by(YEAR, SITE) %>% 
+  summarize(total = sum(COUNT))
+
+kable(totalcount_year)
+
+size_column <- ggplot(totalcount_year, aes(x = YEAR))+
+  geom_line(aes(y = total), colour = "blue")+
+  geom_line(aes(y = total), colour = "red")+
+  geom_line(aes(y = total), colour = "purple")+
+  geom_line(aes(y = total), colour = "green")+
+  geom_line(aes(y = total), colour = "black")
+
+size_column
+
+totalcount_traps <- trap_counts %>%
+  filter(SITE != "AHND to AQUE") %>% 
+  group_by(YEAR, SITE) %>% 
+  summarize(total = sum(TRAPS))
+
+traps_column <- ggplot(totalcount_traps, aes(x = YEAR, y = total))+
+  geom_line(colour = "red")+
+  facet_wrap(~ SITE)
+
+traps_column
+```
+
+
+```{r}
+#Need to do a test to compare means (lobster size) across all 5 LTER sites
+# will do short exploratory data to look at distribution to see if it satisfies assumptions for parametric ANOVA test
+
+lobster_size_hist <- ggplot(lobster_tidy, aes(x = SIZE)) + 
+  geom_histogram( bins= 33, aes(fill= SITE))+
+  facet_wrap(~ SITE, scale = "free")
+
+lobster_size_hist
+
+#distribution looks pretty normal across the sites
+
+#Now on to equal variance test
+
+summary_lobster <- lobster_tidy %>% 
+  filter(YEAR == "2017") %>% 
+  group_by(SITE) %>% 
+  summarize(
+    mean = mean(SIZE),
+    sd = sd(SIZE),
+    variance = var(SIZE)
+  )
+  
+  summary_lobster
+  
+#We are now using levene's test for equal variances
+  
+lobster_levene <- leveneTest(SIZE ~ SITE, data = lobster_tidy)
+
+lobster_levene
+
+```
+
