@@ -65,6 +65,7 @@ lobster_size_hist <- ggplot(lobster_tidy, aes(x = SIZE)) +
 
 lobster_size_hist
 
+
 #distribution looks pretty normal across the sites
 
 #Now on to equal variance test
