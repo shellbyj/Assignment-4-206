@@ -29,6 +29,7 @@ lobster_tidy <- expand.dft(data.frame(lobster_size), freq = "COUNT")
 
 ```{r}
 
+#1. 
 #total # of lobsters sampled at each site each year
 totalcount_year <- lobster_size %>% 
   group_by(YEAR, SITE) %>% 
@@ -96,7 +97,7 @@ lobster_levene
 
 ```{r}
 
-# ANOVA TEST
+#2.  ANOVA TEST
 
 lobster_aov <- aov(mean ~ SITE, data = summary_lobster)
 lobster_sum <- summary(lobster_aov)
