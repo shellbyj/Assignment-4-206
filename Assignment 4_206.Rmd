@@ -207,6 +207,10 @@ F_test_5<-MOHK_12_17 %>%
 
 F_test_5  #p-value=0.1509
 
+
+#I REACH THE CONCLUSION THAT VARIANCES BETWEEN 2012 & 2017 SAMPLES, AT ALL SITES, ARE EQUAL
+
+
 ```
 
 
@@ -227,8 +231,14 @@ ivee_17<-IVEE_12_17 %>%
 
 ivee_17
 
+
+ivee_unpaired_t<-t.test(ivee_12, ivee_17, var.equal = TRUE)
+ivee_unpaired_t  #p-value=0.0361, but when I put var.equal = TRUE I get p=0.0599 compare to see if correct
+
 ivee_unpaired_t<-t.test(ivee_12, ivee_17)
 ivee_unpaired_t  #p-value=0.0361, compare to see if correct
+
+
 
 #########################################################################################
 
@@ -244,8 +254,14 @@ napl_17<-NAPL_12_17 %>%
 
 napl_17
 
+
+napl_unpaired_t<-t.test(napl_12, napl_17, var.equal = TRUE)
+napl_unpaired_t  #p-value=0.5373 or p=0.5002
+
 napl_unpaired_t<-t.test(napl_12, napl_17)
 napl_unpaired_t  #p-value=0.5373
+
+
 
 #########################################################################################
 
@@ -261,8 +277,13 @@ aque_17<-AQUE_12_17 %>%
 
 aque_17
 
+
+aque_unpaired_t<-t.test(aque_12, aque_17, var.equal = TRUE)
+aque_unpaired_t  #p-value=0.1907 or p=0.2097
+
 aque_unpaired_t<-t.test(aque_12, aque_17)
 aque_unpaired_t  #p-value=0.1907
+
 
 #########################################################################################
 
@@ -278,8 +299,14 @@ carp_17<-CARP_12_17 %>%
 
 carp_17
 
+
+carp_unpaired_t<-t.test(carp_12, carp_17, var.equal = TRUE)
+carp_unpaired_t  #p-value=0.2211 or p=0.1819
+
 carp_unpaired_t<-t.test(carp_12, carp_17)
 carp_unpaired_t  #p-value=0.2211
+
+
 
 #########################################################################################
 
@@ -295,10 +322,15 @@ mohk_17<-MOHK_12_17 %>%
 
 mohk_17
 
-mohk_unpaired_t<-t.test(mohk_12, mohk_17)
+
+mohk_unpaired_t<-t.test(mohk_12, mohk_17, var.equal = TRUE)
 mohk_unpaired_t #p-value<0.001
 
+
 ```
+
+
+
 ```{r}
 #4. 
 
