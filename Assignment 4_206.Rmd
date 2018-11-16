@@ -104,11 +104,13 @@ lobster_sum <- summary(lobster_aov)
 
 lobster_aov
 
-penguin_ph <- TukeyHSD(penguin_aov)
 ```
 
 ```{r}
-#Will do paired t-tests to compare lobster sizes between 2012 and 2017 at each of the 5 sites. Do I need to test for equal variances between 2012 and 2017 samples? If so, how?
+#3, Part 1
+
+#Created data frames to use for unpaired t-tests, and created histograms to explore whether the data is normally distributed. Will also do F-tests to check for equal variance
+
 
 IVEE_12_17<-lobster_tidy %>% 
   select(SITE, YEAR, SIZE) %>% 
@@ -122,6 +124,10 @@ IVEE_1217_hist<-ggplot(IVEE_12_17, aes(x=SIZE))+
   
 IVEE_1217_hist
 
+F_test_1<-IVEE_12_17 %>% 
+  var.test(SIZE~YEAR, data=.)
+
+F_test_1  #p-value=0.307 compare values to make sure it is correct
 #####################################################################################
 
 NAPL_12_17<-lobster_tidy %>% 
@@ -136,6 +142,11 @@ NAPL_1217_hist<-ggplot(NAPL_12_17, aes(x=SIZE))+
   facet_wrap(~YEAR, scale="free")
   
 NAPL_1217_hist
+
+F_test_2<-NAPL_12_17 %>% 
+  var.test(SIZE~YEAR, data=.)
+
+F_test_2  #p-value=0.7685
 
 ######################################################################################
 
@@ -152,6 +163,11 @@ AQUE_1217_hist<-ggplot(AQUE_12_17, aes(x=SIZE))+
   
 AQUE_1217_hist
 
+F_test_3<-AQUE_12_17 %>% 
+  var.test(SIZE~YEAR, data=.)
+
+F_test_3  #p-value=0.2986
+
 ######################################################################################
 
 CARP_12_17<-lobster_tidy %>% 
@@ -167,6 +183,11 @@ CARP_1217_hist<-ggplot(CARP_12_17, aes(x=SIZE))+
   
 CARP_1217_hist
 
+F_test_4<-CARP_12_17 %>% 
+  var.test(SIZE~YEAR, data=.)
+
+F_test_4  #p-value=0.2043
+
 #######################################################################################
 
 MOHK_12_17<-lobster_tidy %>% 
@@ -180,4 +201,138 @@ MOHK_1217_hist<-ggplot(MOHK_12_17, aes(x=SIZE))+
   facet_wrap(~YEAR, scale="free")
   
 MOHK_1217_hist
+
+F_test_5<-MOHK_12_17 %>% 
+  var.test(SIZE~YEAR, data=.)
+
+F_test_5  #p-value=0.1509
+
 ```
+
+
+```{r}
+#3, Part 2
+
+#Will do unpaired t-tests to compare lobster sizes between 2012 and 2017 at each of the 5 sites. Did unpaired because there was not a 1-to-1 ratio in data.
+
+ivee_12<-IVEE_12_17 %>%
+  filter(YEAR=="2012") %>% 
+  pull(SIZE)
+
+ivee_12
+
+ivee_17<-IVEE_12_17 %>%
+  filter(YEAR=="2017") %>% 
+  pull(SIZE)
+
+ivee_17
+
+ivee_unpaired_t<-t.test(ivee_12, ivee_17)
+ivee_unpaired_t  #p-value=0.0361, compare to see if correct
+
+#########################################################################################
+
+napl_12<-NAPL_12_17 %>%
+  filter(YEAR=="2012") %>% 
+  pull(SIZE)
+
+napl_12
+
+napl_17<-NAPL_12_17 %>%
+  filter(YEAR=="2017") %>% 
+  pull(SIZE)
+
+napl_17
+
+napl_unpaired_t<-t.test(napl_12, napl_17)
+napl_unpaired_t  #p-value=0.5373
+
+#########################################################################################
+
+aque_12<-AQUE_12_17 %>%
+  filter(YEAR=="2012") %>% 
+  pull(SIZE)
+
+aque_12
+
+aque_17<-AQUE_12_17 %>%
+  filter(YEAR=="2017") %>% 
+  pull(SIZE)
+
+aque_17
+
+aque_unpaired_t<-t.test(aque_12, aque_17)
+aque_unpaired_t  #p-value=0.1907
+
+#########################################################################################
+
+carp_12<-CARP_12_17 %>%
+  filter(YEAR=="2012") %>% 
+  pull(SIZE)
+
+carp_12
+
+carp_17<-CARP_12_17 %>%
+  filter(YEAR=="2017") %>% 
+  pull(SIZE)
+
+carp_17
+
+carp_unpaired_t<-t.test(carp_12, carp_17)
+carp_unpaired_t  #p-value=0.2211
+
+#########################################################################################
+
+mohk_12<-MOHK_12_17 %>%
+  filter(YEAR=="2012") %>% 
+  pull(SIZE)
+
+mohk_12
+
+mohk_17<-MOHK_12_17 %>%
+  filter(YEAR=="2017") %>% 
+  pull(SIZE)
+
+mohk_17
+
+mohk_unpaired_t<-t.test(mohk_12, mohk_17)
+mohk_unpaired_t #p-value<0.001
+
+```
+```{r}
+#4. 
+
+#Will make table for # of lobsters at each site that are longer than 82.6 mm. Then I will do a chi-square test on this table.
+
+lobster_83_up<-lobster_tidy %>% 
+  mutate(
+    size=ifelse(
+      SIZE<83,"below_83", "above_83")
+  )
+  
+
+lobster_83_up
+
+table_83_up<-lobster_83_up %>% 
+  count(SITE,size) %>% 
+  spread(size, n) %>% 
+  select(-SITE)
+
+rownames(table_83_up)<-c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")
+
+table_83_up
+
+######################################################################################
+#Proportions table made
+
+above_83_prop<-prop.table(as.matrix(table_83_up), 1)
+above_83_prop
+
+######################################################################################
+#Performing chi-square
+
+above_83_x2<-chisq.test(table_83_up)
+above_83_x2  #p-value < 0.001, compare to make sure answer is correct
+
+```
+
