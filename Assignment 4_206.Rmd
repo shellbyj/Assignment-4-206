@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, message=FALSE, include=FALSE}
 library(tidyverse)
 library(kableExtra)
 library(knitr)
@@ -27,7 +27,7 @@ lobster_tidy <- expand.dft(data.frame(lobster_size), freq = "COUNT")
 ```
 
 
-```{r}
+```{r, message=FALSE}
 
 #1. 
 #total # of lobsters sampled at each site each year
@@ -37,15 +37,17 @@ totalcount_year <- lobster_size %>%
 
 kable(totalcount_year)
 
-#lobster abundanc
+#lobster abundance
 size_column <- ggplot(totalcount_year, aes(x = YEAR, y = total))+
-  geom_point()+
-  geom_line(aes(colour = SITE))
-  
+  geom_line(size = 2, aes(colour = SITE)) +
+  geom_point(size = 3)+
+  labs(y = "Total Number of Spiny Lobster", x = "Sampling Year")+
+  ggtitle("California Spiny Lobster Totals for 5 LTER Sites (2012-2017)")+
+  theme_classic()
 
 size_column
 
-#total # of traps at each site each year (8 sites)
+#total # of traps at each site each year- 9 sites(8 sites with in between sites values removed)
 totalcount_traps <- trap_counts %>%
   filter(SITE != "AHND to AQUE", SITE != "ABUR", SITE != "AHND", SITE != "GOLB") %>% 
   group_by(YEAR, SITE) %>% 
@@ -53,24 +55,35 @@ totalcount_traps <- trap_counts %>%
 
 #traps line plots
 traps_column <- ggplot(totalcount_traps, aes(x = YEAR, y = total))+
-  geom_point()+
-  geom_line(aes(colour = SITE))
+  geom_line(size = 2, aes(colour = SITE))+
+  geom_point(size = 3)+
+  labs(y = "Total Number of Traps", x = "Sampling Year")+
+  ggtitle("Total Number of Commercial Traps at 5 LTER Sites (2012-2017)")+
+  theme_classic()
 
 traps_column
 ```
 
+**Figure 1.** Total counts of California Spiny Lobster at 5 Longterm Ecological Research sites from 2012 to 2017.  
 
-```{r}
-#Need to do a test to compare means (lobster size) across all 5 LTER sites
-# will do short exploratory data to look at distribution to see if it satisfies assumptions for parametric ANOVA test
+**Figure 2.** Total counts of commercial traps at 5 Longterm Ecological Research sites from 2012 to 2017.
+
+```{r,  message=FALSE, include=FALSE, results='hide'}
+#2a. Will do short exploratory data to look at distribution to see if it satisfies assumptions for parametric ANOVA test
 
 lobster_size_hist <- ggplot(lobster_tidy, aes(x = SIZE)) + 
   geom_histogram( bins= 33, aes(fill= SITE))+
   facet_wrap(~ SITE, scale = "free")
 
-lobster_size_hist
+lobster_size_hist #exploratory histogram of lobster sizes for all 5 sites
 
-#distribution looks pretty normal across the sites
+lobster_qqs <-  ggplot(lobster_tidy, aes(sample = SIZE)) +
+  geom_qq(aes(color = SITE)) +
+  facet_wrap(~ SITE, scale = "free")
+
+lobster_qqs #exploratory qq plots of lobster sizes for all 5 sites
+
+#Distribution looks pretty normal across the sites and qq plots are fairly linear
 
 #Now on to equal variance test
 
@@ -95,14 +108,63 @@ lobster_levene
 
 ```
 
+
+```{r, message=FALSE, include=FALSE, results='hide'}
+
+
+#So we can use an ANOVA test to compare means across the 5 sites in 2017. However, before we run the test, let's just see how the means look compared to one another >>> boxplot. 
+
+
+lobster17 <- lobster_tidy %>% 
+  filter(YEAR == "2017")
+lobster17
+
+box <-  ggplot(lobster17, aes(x = SITE, y = SIZE)) +
+  geom_boxplot(width = 0.4) +
+  geom_jitter(width = 0.1, alpha = 0.5, aes(color = SITE))
+
+box
+```
+
 ```{r}
 
-#2.  ANOVA TEST
+#2b.  ANOVA TEST
 
-lobster_aov <- aov(mean ~ SITE, data = summary_lobster)
+#Need to do a test to compare means (lobster size) across all 5 LTER sites in 2017
+
+#Null: Mean lobster sizes across all 5 sites are equal
+#Alternative: At least 2 sites have mean lobster sizes that are unequal 
+
+
+lobster_aov <- aov.test(SIZE ~ SITE, data = lobster17)
 lobster_sum <- summary(lobster_aov)
 
 lobster_aov
+
+post_hoc <- paircomp(lobster_aov, adjust.method = "bonferroni")
+
+## ANOVA revealed that there is a significant difference in means across the sites and the post-hoc clarified that means differ between 3 pairs of sites (NAPL/MOHK, NAPL/IVEE, NAPL/CARP)
+
+
+```
+
+
+
+
+```{r}
+
+#2C. Column graph to show results of ANOVA
+
+lobster_colgraph <- summary_lobster %>% 
+  ggplot(aes(x = SITE, y = mean)) +
+  geom_col(fill = "red", colour = "black", width = .5 ) +
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.3) +
+  labs(x = "LTER SITE", 
+         y = "Mean Lobster Size (carapace length) mm",
+         title = "Mean Lobster Size at 5 LTER Sites (2017)") +
+  theme_classic()
+
+lobster_colgraph
 
 ```
 
