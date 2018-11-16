@@ -107,3 +107,77 @@ lobster_aov
 penguin_ph <- TukeyHSD(penguin_aov)
 ```
 
+```{r}
+#Will do paired t-tests to compare lobster sizes between 2012 and 2017 at each of the 5 sites. Do I need to test for equal variances between 2012 and 2017 samples? If so, how?
+
+IVEE_12_17<-lobster_tidy %>% 
+  select(SITE, YEAR, SIZE) %>% 
+  filter(SITE=="IVEE", YEAR=="2012"|YEAR=="2017")
+  
+IVEE_12_17
+
+IVEE_1217_hist<-ggplot(IVEE_12_17, aes(x=SIZE))+
+  geom_histogram()+
+  facet_wrap(~YEAR, scale="free")
+  
+IVEE_1217_hist
+
+#####################################################################################
+
+NAPL_12_17<-lobster_tidy %>% 
+  select(SITE, YEAR, SIZE) %>% 
+  filter(SITE=="NAPL", YEAR=="2012"|YEAR=="2017")
+  
+NAPL_12_17
+
+
+NAPL_1217_hist<-ggplot(NAPL_12_17, aes(x=SIZE))+
+  geom_histogram()+
+  facet_wrap(~YEAR, scale="free")
+  
+NAPL_1217_hist
+
+######################################################################################
+
+AQUE_12_17<-lobster_tidy %>% 
+  select(SITE, YEAR, SIZE) %>% 
+  filter(SITE=="AQUE", YEAR=="2012"|YEAR=="2017")
+
+AQUE_12_17
+
+
+AQUE_1217_hist<-ggplot(AQUE_12_17, aes(x=SIZE))+
+  geom_histogram()+
+  facet_wrap(~YEAR, scale="free")
+  
+AQUE_1217_hist
+
+######################################################################################
+
+CARP_12_17<-lobster_tidy %>% 
+  select(SITE, YEAR, SIZE) %>% 
+  filter(SITE=="CARP", YEAR=="2012"|YEAR=="2017")
+
+CARP_12_17
+
+
+CARP_1217_hist<-ggplot(CARP_12_17, aes(x=SIZE))+
+  geom_histogram()+
+  facet_wrap(~YEAR, scale="free")
+  
+CARP_1217_hist
+
+#######################################################################################
+
+MOHK_12_17<-lobster_tidy %>% 
+  select(SITE, YEAR, SIZE) %>% 
+  filter(SITE=="MOHK", YEAR=="2012"|YEAR=="2017")
+
+MOHK_12_17
+
+MOHK_1217_hist<-ggplot(MOHK_12_17, aes(x=SIZE))+
+  geom_histogram()+
+  facet_wrap(~YEAR, scale="free")
+  
+MOHK_1217_hist
+```
