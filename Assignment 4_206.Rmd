@@ -418,3 +418,34 @@ above_83_x2  #p-value < 0.001, 0.0009864 to be exact
 
 ```
 
+```{r}
+
+final_prop_table<-lobster_tidy %>% 
+  filter(YEAR=="2017") %>% 
+  mutate(
+    size=ifelse(
+      SIZE>=83,"above_83", "below_83")
+  ) %>% 
+  group_by(SITE) %>% 
+  summarize(
+    total_lobsters_sampled=n(SIZE),
+    legal_size_lobsters=n())
+
+final_prop_table
+
+```
+
+```{r}
+
+final_prop_table2<-lobster_tidy %>% 
+  filter(YEAR=="2017") %>% 
+  mutate(
+    size=ifelse(
+      SIZE>=83,"above_83", "below_83")
+  ) %>% count(SITE,size,SIZE) %>% 
+  spread(size, n)
+
+final_prop_table2
+
+```
+
