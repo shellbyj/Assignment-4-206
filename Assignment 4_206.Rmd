@@ -302,7 +302,10 @@ ivee_unpaired_t  #p-value=0.0361, but when I put var.equal = TRUE I get p=0.0599
 ivee_unpaired_t<-t.test(ivee_12, ivee_17)
 ivee_unpaired_t  #p-value=0.0361, compare to see if correct
 
+library(effsize)
 
+effect_size1<-cohen.d(ivee_12, ivee_17)
+effect_size1  #d=0.378 (small)
 
 #########################################################################################
 
@@ -325,7 +328,8 @@ napl_unpaired_t  #p-value=0.5373 or p=0.5002
 napl_unpaired_t<-t.test(napl_12, napl_17)
 napl_unpaired_t  #p-value=0.5373
 
-
+effect_size2<-cohen.d(napl_12, napl_17)
+effect_size2  #d=0.283 (small)
 
 #########################################################################################
 
@@ -348,6 +352,8 @@ aque_unpaired_t  #p-value=0.1907 or p=0.2097
 aque_unpaired_t<-t.test(aque_12, aque_17)
 aque_unpaired_t  #p-value=0.1907
 
+effect_size3<-cohen.d(aque_12, aque_17)
+effect_size3  #d=0.256 (small)
 
 #########################################################################################
 
@@ -370,7 +376,8 @@ carp_unpaired_t  #p-value=0.2211 or p=0.1819
 carp_unpaired_t<-t.test(carp_12, carp_17)
 carp_unpaired_t  #p-value=0.2211
 
-
+effect_size4<-cohen.d(carp_12, carp_17)
+effect_size4  #d=0.159 (negligible)
 
 #########################################################################################
 
@@ -390,6 +397,8 @@ mohk_17
 mohk_unpaired_t<-t.test(mohk_12, mohk_17, var.equal = TRUE)
 mohk_unpaired_t #p-value<0.001
 
+effect_size5<-cohen.d(mohk_12, mohk_17)
+effect_size5  #d=0.541 (medium)
 
 ```
 
