@@ -371,6 +371,8 @@ mohk_17
 mohk_unpaired_t<-t.test(mohk_12, mohk_17, var.equal = TRUE)
 mohk_unpaired_t #p-value<0.001; reject null
 
+library(effsize)
+
 effect_size5<-cohen.d(mohk_12, mohk_17)
 effect_size5  #d=0.541 (medium)
 
@@ -384,9 +386,10 @@ effect_size5  #d=0.541 (medium)
 #Will make table for # of lobsters at each site that are longer than 82.6 mm. Then I will do a chi-square test on this table.
 
 lobster_83_up<-lobster_tidy %>% 
+  filter(YEAR=="2017") %>% 
   mutate(
     size=ifelse(
-      SIZE<83,"below_83", "above_83")
+      SIZE>=83,"above_83", "below_83")
   )
   
 
@@ -411,7 +414,7 @@ above_83_prop
 #Performing chi-square
 
 above_83_x2<-chisq.test(table_83_up)
-above_83_x2  #p-value < 0.001, compare to make sure answer is correct
+above_83_x2  #p-value < 0.001, 0.0009864 to be exact
 
 ```
 
