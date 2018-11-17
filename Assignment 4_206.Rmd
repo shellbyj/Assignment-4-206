@@ -61,6 +61,7 @@ traps_column <- ggplot(totalcount_traps, aes(x = YEAR, y = total))+
   ggtitle("Total Number of Commercial Traps at 5 LTER Sites (2012-2017)")+
   theme_classic()
 
+
 traps_column
 ```
 
@@ -136,14 +137,15 @@ box
 #Alternative: At least 2 sites have mean lobster sizes that are unequal 
 
 
-lobster_aov <- aov.test(SIZE ~ SITE, data = lobster17)
-lobster_sum <- summary(lobster_aov)
 
-lobster_aov
+## ANOVA revealed that there is a significant difference in means across the sites and the post-hoc clarified that means differ between 3 pairs of sites (NAPL/IVEE, NAPL/CARP)
 
-post_hoc <- paircomp(lobster_aov, adjust.method = "bonferroni")
+aov2 <- aov(SIZE ~ SITE, data = lobster17) #lobster ANOVA
 
-## ANOVA revealed that there is a significant difference in means across the sites and the post-hoc clarified that means differ between 3 pairs of sites (NAPL/MOHK, NAPL/IVEE, NAPL/CARP)
+lobster_ph <- TukeyHSD(aov2)
+
+lobster_ph
+
 
 
 ```
