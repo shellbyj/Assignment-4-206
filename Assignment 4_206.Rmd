@@ -88,16 +88,27 @@ lobster_qqs #exploratory qq plots of lobster sizes for all 5 sites
 
 #Now on to equal variance test
 
-summary_lobster <- lobster_tidy %>% 
+summary_lobster <- lobster_tidy %>% #summary table for 2017
   filter(YEAR == "2017") %>% 
   group_by(SITE) %>% 
   summarize(
     mean = mean(SIZE),
     sd = sd(SIZE),
-    variance = var(SIZE)
+    variance = var(SIZE),
+    N = length(SIZE)
+  )
+
+summary_lobster12 <- lobster_tidy %>% #summary table for 2012
+  filter(YEAR == "2012") %>% 
+  group_by(SITE) %>% 
+  summarize(
+    mean = mean(SIZE),
+    sd = sd(SIZE),
+    variance = var(SIZE),
+    N = length(SIZE)
   )
   
-  summary_lobster
+  summary_lobster12
   
 #We are now using levene's test for equal variances
   
@@ -138,9 +149,10 @@ box
 
 
 
-## ANOVA revealed that there is a significant difference in means across the sites and the post-hoc clarified that means differ between 3 pairs of sites (NAPL/IVEE, NAPL/CARP)
+## ANOVA revealed that there is a significant difference in means across the sites and the post-hoc clarified that means differ between 2 pairs of sites (NAPL/IVEE, NAPL/CARP)
 
 aov2 <- aov(SIZE ~ SITE, data = lobster17) #lobster ANOVA
+summary(aov2)
 
 lobster_ph <- TukeyHSD(aov2)
 
@@ -170,7 +182,7 @@ lobster_colgraph
 
 ```
 
-```{r}
+```{r, message=FALSE, results='hide'}
 #3, Part 1
 
 #Created data frames to use for unpaired t-tests, and created histograms to explore whether the data is normally distributed. Will also do F-tests to check for equal variance
