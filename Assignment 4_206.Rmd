@@ -176,7 +176,12 @@ lobster_colgraph <- summary_lobster %>%
   labs(x = "LTER SITE", 
          y = "Mean Lobster Size (carapace length) mm",
          title = "Mean Lobster Size at 5 LTER Sites (2017)") +
-  theme_classic()
+  annotate("text", x = 2, y = 90, label = "a", family = "Times New Roman") +
+  annotate("text", x = 3, y = 90, label = "a,b", family = "Times New Roman") +
+  annotate("text", x = 4, y = 87, label = "b", family = "Times New Roman") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(family = "Times New Roman"))
+  
 
 lobster_colgraph
 
@@ -290,7 +295,7 @@ F_test_5  #p-value=0.1509
 ```
 
 
-```{r}
+```{r, message=FALSE}
 #3, Part 2
 
 #Will do unpaired t-tests to compare lobster sizes between 2012 and 2017 at each of the 5 sites. Did unpaired because there was not a 1-to-1 ratio in data.
